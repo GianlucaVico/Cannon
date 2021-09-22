@@ -11,37 +11,29 @@ public partial class MainWindow
 
 	private global::Gtk.Label label5;
 
-	private global::Gtk.RadioButton DarkAI;
+	private global::Gtk.RadioButton darkAI;
 
-	private global::Gtk.RadioButton LightAI;
+	private global::Gtk.RadioButton lightAI;
 
 	private global::Gtk.HBox hbox7;
 
 	private global::Gtk.Label label7;
 
-	private global::Gtk.Label label8;
+	private global::Gtk.Label timeLabel;
+
+	private global::Gtk.VBox vbox1;
+
+	private global::Gtk.Label label1;
 
 	private global::Gtk.ScrolledWindow historyBox;
 
-	private global::Gtk.TextView textview1;
+	private global::Gtk.TextView logBox;
 
 	private global::Gtk.HBox hbox2;
 
-	private global::Gtk.Fixed fixed1;
+	private global::Gtk.Fixed boardPanel;
 
-	private global::Gtk.Image image167;
-
-	private global::Gtk.EventBox eventbox11;
-
-	private global::Gtk.Image image11;
-
-	private global::Gtk.EventBox eventbox2;
-
-	private global::Gtk.Fixed fixed3;
-
-	private global::Gtk.Image image12;
-
-	private global::Gtk.Image image13;
+	private global::Gtk.Image boardImage;
 
 	private global::Gtk.VButtonBox vbuttonbox4;
 
@@ -86,26 +78,26 @@ public partial class MainWindow
 		w1.Expand = false;
 		w1.Fill = false;
 		// Container child vbox3.Gtk.Box+BoxChild
-		this.DarkAI = new global::Gtk.RadioButton(global::Mono.Unix.Catalog.GetString("DARK Player"));
-		this.DarkAI.CanFocus = true;
-		this.DarkAI.Name = "DarkAI";
-		this.DarkAI.DrawIndicator = true;
-		this.DarkAI.UseUnderline = true;
-		this.DarkAI.Group = new global::GLib.SList(global::System.IntPtr.Zero);
-		this.vbox3.Add(this.DarkAI);
-		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.DarkAI]));
+		this.darkAI = new global::Gtk.RadioButton(global::Mono.Unix.Catalog.GetString("DARK Player"));
+		this.darkAI.CanFocus = true;
+		this.darkAI.Name = "darkAI";
+		this.darkAI.DrawIndicator = true;
+		this.darkAI.UseUnderline = true;
+		this.darkAI.Group = new global::GLib.SList(global::System.IntPtr.Zero);
+		this.vbox3.Add(this.darkAI);
+		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.darkAI]));
 		w2.Position = 1;
 		w2.Expand = false;
 		w2.Fill = false;
 		// Container child vbox3.Gtk.Box+BoxChild
-		this.LightAI = new global::Gtk.RadioButton(global::Mono.Unix.Catalog.GetString("LIGHT Player"));
-		this.LightAI.CanFocus = true;
-		this.LightAI.Name = "LightAI";
-		this.LightAI.DrawIndicator = true;
-		this.LightAI.UseUnderline = true;
-		this.LightAI.Group = this.DarkAI.Group;
-		this.vbox3.Add(this.LightAI);
-		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.LightAI]));
+		this.lightAI = new global::Gtk.RadioButton(global::Mono.Unix.Catalog.GetString("LIGHT Player"));
+		this.lightAI.CanFocus = true;
+		this.lightAI.Name = "lightAI";
+		this.lightAI.DrawIndicator = true;
+		this.lightAI.UseUnderline = true;
+		this.lightAI.Group = this.darkAI.Group;
+		this.vbox3.Add(this.lightAI);
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox3[this.lightAI]));
 		w3.Position = 2;
 		w3.Expand = false;
 		w3.Fill = false;
@@ -123,11 +115,11 @@ public partial class MainWindow
 		w4.Expand = false;
 		w4.Fill = false;
 		// Container child hbox7.Gtk.Box+BoxChild
-		this.label8 = new global::Gtk.Label();
-		this.label8.Name = "label8";
-		this.label8.LabelProp = global::Mono.Unix.Catalog.GetString("00:00");
-		this.hbox7.Add(this.label8);
-		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox7[this.label8]));
+		this.timeLabel = new global::Gtk.Label();
+		this.timeLabel.Name = "timeLabel";
+		this.timeLabel.LabelProp = global::Mono.Unix.Catalog.GetString("00:00");
+		this.hbox7.Add(this.timeLabel);
+		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox7[this.timeLabel]));
 		w5.Position = 1;
 		w5.Expand = false;
 		w5.Fill = false;
@@ -142,75 +134,61 @@ public partial class MainWindow
 		w7.Expand = false;
 		w7.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
+		this.vbox1 = new global::Gtk.VBox();
+		this.vbox1.Name = "vbox1";
+		this.vbox1.Spacing = 6;
+		// Container child vbox1.Gtk.Box+BoxChild
+		this.label1 = new global::Gtk.Label();
+		this.label1.Name = "label1";
+		this.label1.LabelProp = global::Mono.Unix.Catalog.GetString("Move history");
+		this.vbox1.Add(this.label1);
+		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.label1]));
+		w8.Position = 0;
+		w8.Expand = false;
+		w8.Fill = false;
+		// Container child vbox1.Gtk.Box+BoxChild
 		this.historyBox = new global::Gtk.ScrolledWindow();
+		this.historyBox.WidthRequest = 750;
 		this.historyBox.Name = "historyBox";
+		this.historyBox.VscrollbarPolicy = ((global::Gtk.PolicyType)(0));
 		this.historyBox.ShadowType = ((global::Gtk.ShadowType)(1));
+		this.historyBox.BorderWidth = ((uint)(3));
 		// Container child historyBox.Gtk.Container+ContainerChild
-		this.textview1 = new global::Gtk.TextView();
-		this.textview1.Buffer.Text = global::Mono.Unix.Catalog.GetString("History:\n");
-		this.textview1.CanFocus = true;
-		this.textview1.Name = "textview1";
-		this.historyBox.Add(this.textview1);
-		this.hbox1.Add(this.historyBox);
-		global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.historyBox]));
-		w9.Position = 1;
+		this.logBox = new global::Gtk.TextView();
+		this.logBox.Buffer.Text = global::Mono.Unix.Catalog.GetString("--- TOP ---\n");
+		this.logBox.CanFocus = true;
+		this.logBox.Name = "logBox";
+		this.logBox.Editable = false;
+		this.historyBox.Add(this.logBox);
+		this.vbox1.Add(this.historyBox);
+		global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.historyBox]));
+		w10.Position = 1;
+		this.hbox1.Add(this.vbox1);
+		global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.vbox1]));
+		w11.Position = 1;
+		w11.Expand = false;
+		w11.Fill = false;
 		this.vpaned1.Add(this.hbox1);
-		global::Gtk.Paned.PanedChild w10 = ((global::Gtk.Paned.PanedChild)(this.vpaned1[this.hbox1]));
-		w10.Resize = false;
+		global::Gtk.Paned.PanedChild w12 = ((global::Gtk.Paned.PanedChild)(this.vpaned1[this.hbox1]));
+		w12.Resize = false;
 		// Container child vpaned1.Gtk.Paned+PanedChild
 		this.hbox2 = new global::Gtk.HBox();
 		this.hbox2.Name = "hbox2";
 		this.hbox2.Spacing = 6;
 		// Container child hbox2.Gtk.Box+BoxChild
-		this.fixed1 = new global::Gtk.Fixed();
-		this.fixed1.Name = "fixed1";
-		this.fixed1.HasWindow = false;
-		// Container child fixed1.Gtk.Fixed+FixedChild
-		this.image167 = new global::Gtk.Image();
-		this.image167.Name = "image167";
-		this.image167.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("Cannon_GUI.board.svg");
-		this.fixed1.Add(this.image167);
-		// Container child fixed1.Gtk.Fixed+FixedChild
-		this.eventbox11 = new global::Gtk.EventBox();
-		this.eventbox11.Name = "eventbox11";
-		this.eventbox11.VisibleWindow = false;
-		// Container child eventbox11.Gtk.Container+ContainerChild
-		this.image11 = new global::Gtk.Image();
-		this.image11.Name = "image11";
-		this.image11.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("Cannon_GUI.target_light.svg");
-		this.eventbox11.Add(this.image11);
-		this.fixed1.Add(this.eventbox11);
-		global::Gtk.Fixed.FixedChild w13 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.eventbox11]));
-		w13.X = 30;
-		w13.Y = 30;
-		// Container child fixed1.Gtk.Fixed+FixedChild
-		this.eventbox2 = new global::Gtk.EventBox();
-		this.eventbox2.Name = "eventbox2";
-		this.eventbox2.VisibleWindow = false;
-		// Container child eventbox2.Gtk.Container+ContainerChild
-		this.fixed3 = new global::Gtk.Fixed();
-		this.fixed3.Name = "fixed3";
-		this.fixed3.HasWindow = false;
-		// Container child fixed3.Gtk.Fixed+FixedChild
-		this.image12 = new global::Gtk.Image();
-		this.image12.Name = "image12";
-		this.image12.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("Cannon_GUI.light_piece.svg");
-		this.fixed3.Add(this.image12);
-		// Container child fixed3.Gtk.Fixed+FixedChild
-		this.image13 = new global::Gtk.Image();
-		this.image13.Name = "image13";
-		this.image13.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("Cannon_GUI.target_empty.svg");
-		this.fixed3.Add(this.image13);
-		this.eventbox2.Add(this.fixed3);
-		this.fixed1.Add(this.eventbox2);
-		global::Gtk.Fixed.FixedChild w17 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.eventbox2]));
-		w17.X = 455;
-		w17.Y = 339;
-		this.hbox2.Add(this.fixed1);
-		global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.fixed1]));
-		w18.Position = 0;
-		w18.Expand = false;
-		w18.Fill = false;
+		this.boardPanel = new global::Gtk.Fixed();
+		this.boardPanel.Name = "boardPanel";
+		this.boardPanel.HasWindow = false;
+		// Container child boardPanel.Gtk.Fixed+FixedChild
+		this.boardImage = new global::Gtk.Image();
+		this.boardImage.Name = "boardImage";
+		this.boardImage.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("Cannon_GUI.board.svg");
+		this.boardPanel.Add(this.boardImage);
+		this.hbox2.Add(this.boardPanel);
+		global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.boardPanel]));
+		w14.Position = 0;
+		w14.Expand = false;
+		w14.Fill = false;
 		// Container child hbox2.Gtk.Box+BoxChild
 		this.vbuttonbox4 = new global::Gtk.VButtonBox();
 		this.vbuttonbox4.Name = "vbuttonbox4";
@@ -223,60 +201,60 @@ public partial class MainWindow
 		this.restartButton.Name = "restartButton";
 		this.restartButton.UseUnderline = true;
 		this.restartButton.Label = global::Mono.Unix.Catalog.GetString("Restart");
-		global::Gtk.Image w19 = new global::Gtk.Image();
-		w19.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-refresh", global::Gtk.IconSize.Button);
-		this.restartButton.Image = w19;
+		global::Gtk.Image w15 = new global::Gtk.Image();
+		w15.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-refresh", global::Gtk.IconSize.Button);
+		this.restartButton.Image = w15;
 		this.vbuttonbox4.Add(this.restartButton);
-		global::Gtk.ButtonBox.ButtonBoxChild w20 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.vbuttonbox4[this.restartButton]));
-		w20.Expand = false;
-		w20.Fill = false;
+		global::Gtk.ButtonBox.ButtonBoxChild w16 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.vbuttonbox4[this.restartButton]));
+		w16.Expand = false;
+		w16.Fill = false;
 		// Container child vbuttonbox4.Gtk.ButtonBox+ButtonBoxChild
 		this.playButton = new global::Gtk.Button();
 		this.playButton.CanFocus = true;
 		this.playButton.Name = "playButton";
 		this.playButton.UseUnderline = true;
 		this.playButton.Label = global::Mono.Unix.Catalog.GetString("Play");
-		global::Gtk.Image w21 = new global::Gtk.Image();
-		w21.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-media-play", global::Gtk.IconSize.Menu);
-		this.playButton.Image = w21;
+		global::Gtk.Image w17 = new global::Gtk.Image();
+		w17.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-media-play", global::Gtk.IconSize.Menu);
+		this.playButton.Image = w17;
 		this.vbuttonbox4.Add(this.playButton);
-		global::Gtk.ButtonBox.ButtonBoxChild w22 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.vbuttonbox4[this.playButton]));
-		w22.Position = 1;
-		w22.Expand = false;
-		w22.Fill = false;
+		global::Gtk.ButtonBox.ButtonBoxChild w18 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.vbuttonbox4[this.playButton]));
+		w18.Position = 1;
+		w18.Expand = false;
+		w18.Fill = false;
 		// Container child vbuttonbox4.Gtk.ButtonBox+ButtonBoxChild
 		this.stopButton = new global::Gtk.Button();
 		this.stopButton.CanFocus = true;
 		this.stopButton.Name = "stopButton";
 		this.stopButton.UseUnderline = true;
 		this.stopButton.Label = global::Mono.Unix.Catalog.GetString("Stop");
-		global::Gtk.Image w23 = new global::Gtk.Image();
-		w23.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-media-stop", global::Gtk.IconSize.Menu);
-		this.stopButton.Image = w23;
+		global::Gtk.Image w19 = new global::Gtk.Image();
+		w19.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-media-stop", global::Gtk.IconSize.Menu);
+		this.stopButton.Image = w19;
 		this.vbuttonbox4.Add(this.stopButton);
-		global::Gtk.ButtonBox.ButtonBoxChild w24 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.vbuttonbox4[this.stopButton]));
-		w24.Position = 2;
-		w24.Expand = false;
-		w24.Fill = false;
+		global::Gtk.ButtonBox.ButtonBoxChild w20 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.vbuttonbox4[this.stopButton]));
+		w20.Position = 2;
+		w20.Expand = false;
+		w20.Fill = false;
 		// Container child vbuttonbox4.Gtk.ButtonBox+ButtonBoxChild
 		this.undoButton = new global::Gtk.Button();
 		this.undoButton.CanFocus = true;
 		this.undoButton.Name = "undoButton";
 		this.undoButton.UseUnderline = true;
 		this.undoButton.Label = global::Mono.Unix.Catalog.GetString("Undo");
-		global::Gtk.Image w25 = new global::Gtk.Image();
-		w25.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-undo", global::Gtk.IconSize.Menu);
-		this.undoButton.Image = w25;
+		global::Gtk.Image w21 = new global::Gtk.Image();
+		w21.Pixbuf = global::Stetic.IconLoader.LoadIcon(this, "gtk-undo", global::Gtk.IconSize.Menu);
+		this.undoButton.Image = w21;
 		this.vbuttonbox4.Add(this.undoButton);
-		global::Gtk.ButtonBox.ButtonBoxChild w26 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.vbuttonbox4[this.undoButton]));
-		w26.Position = 3;
-		w26.Expand = false;
-		w26.Fill = false;
+		global::Gtk.ButtonBox.ButtonBoxChild w22 = ((global::Gtk.ButtonBox.ButtonBoxChild)(this.vbuttonbox4[this.undoButton]));
+		w22.Position = 3;
+		w22.Expand = false;
+		w22.Fill = false;
 		this.hbox2.Add(this.vbuttonbox4);
-		global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.vbuttonbox4]));
-		w27.Position = 1;
-		w27.Expand = false;
-		w27.Fill = false;
+		global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.vbuttonbox4]));
+		w23.Position = 1;
+		w23.Expand = false;
+		w23.Fill = false;
 		this.vpaned1.Add(this.hbox2);
 		this.Add(this.vpaned1);
 		if ((this.Child != null))
@@ -285,10 +263,8 @@ public partial class MainWindow
 		}
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
-		this.DarkAI.Toggled += new global::System.EventHandler(this.ChangeAI);
-		this.LightAI.Toggled += new global::System.EventHandler(this.ChangeAI);
-		this.eventbox11.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler(this.OnClick);
-		this.image11.ButtonPressEvent += new global::Gtk.ButtonPressEventHandler(this.OnClick);
-		this.restartButton.Clicked += new global::System.EventHandler(this.OnClick);
+		this.darkAI.Toggled += new global::System.EventHandler(this.ChangeAI);
+		this.lightAI.Toggled += new global::System.EventHandler(this.ChangeAI);
+		this.restartButton.Clicked += new global::System.EventHandler(this.Reset);
 	}
 }

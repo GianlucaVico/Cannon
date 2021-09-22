@@ -2,8 +2,10 @@
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
+    <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/Cannon_GUI.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="1080 1208">
@@ -40,7 +42,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="Gtk.RadioButton" id="DarkAI">
+                  <widget class="Gtk.RadioButton" id="darkAI">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
                     <property name="Label" translatable="yes">DARK Player</property>
@@ -59,7 +61,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="Gtk.RadioButton" id="LightAI">
+                  <widget class="Gtk.RadioButton" id="lightAI">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
                     <property name="Label" translatable="yes">LIGHT Player</property>
@@ -93,7 +95,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gtk.Label" id="label8">
+                      <widget class="Gtk.Label" id="timeLabel">
                         <property name="MemberName" />
                         <property name="LabelProp" translatable="yes">00:00</property>
                       </widget>
@@ -121,22 +123,50 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.ScrolledWindow" id="historyBox">
+              <widget class="Gtk.VBox" id="vbox1">
                 <property name="MemberName" />
-                <property name="ShadowType">In</property>
+                <property name="Spacing">6</property>
                 <child>
-                  <widget class="Gtk.TextView" id="textview1">
+                  <widget class="Gtk.Label" id="label1">
                     <property name="MemberName" />
-                    <property name="CanFocus">True</property>
-                    <property name="ShowScrollbars">True</property>
-                    <property name="Text" translatable="yes">History:
-</property>
+                    <property name="LabelProp" translatable="yes">Move history</property>
                   </widget>
+                  <packing>
+                    <property name="Position">0</property>
+                    <property name="AutoSize">True</property>
+                    <property name="Expand">False</property>
+                    <property name="Fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.ScrolledWindow" id="historyBox">
+                    <property name="MemberName" />
+                    <property name="WidthRequest">750</property>
+                    <property name="VscrollbarPolicy">Always</property>
+                    <property name="ShadowType">In</property>
+                    <property name="BorderWidth">3</property>
+                    <child>
+                      <widget class="Gtk.TextView" id="logBox">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="ShowScrollbars">True</property>
+                        <property name="Editable">False</property>
+                        <property name="Text" translatable="yes">--- TOP ---
+</property>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Position">1</property>
+                    <property name="AutoSize">True</property>
+                  </packing>
                 </child>
               </widget>
               <packing>
                 <property name="Position">1</property>
                 <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
               </packing>
             </child>
           </widget>
@@ -149,60 +179,14 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
-              <widget class="Gtk.Fixed" id="fixed1">
+              <widget class="Gtk.Fixed" id="boardPanel">
                 <property name="MemberName" />
                 <property name="HasWindow">False</property>
                 <child>
-                  <widget class="Gtk.Image" id="image167">
+                  <widget class="Gtk.Image" id="boardImage">
                     <property name="MemberName" />
                     <property name="Pixbuf">resource:Cannon_GUI.board.svg</property>
                   </widget>
-                </child>
-                <child>
-                  <widget class="Gtk.EventBox" id="eventbox11">
-                    <property name="MemberName" />
-                    <property name="VisibleWindow">False</property>
-                    <signal name="ButtonReleaseEvent" handler="OnClick" />
-                    <child>
-                      <widget class="Gtk.Image" id="image11">
-                        <property name="MemberName" />
-                        <property name="Pixbuf">resource:Cannon_GUI.target_light.svg</property>
-                        <signal name="ButtonPressEvent" handler="OnClick" />
-                      </widget>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="X">30</property>
-                    <property name="Y">30</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="Gtk.EventBox" id="eventbox2">
-                    <property name="MemberName" />
-                    <property name="VisibleWindow">False</property>
-                    <child>
-                      <widget class="Gtk.Fixed" id="fixed3">
-                        <property name="MemberName" />
-                        <property name="HasWindow">False</property>
-                        <child>
-                          <widget class="Gtk.Image" id="image12">
-                            <property name="MemberName" />
-                            <property name="Pixbuf">resource:Cannon_GUI.light_piece.svg</property>
-                          </widget>
-                        </child>
-                        <child>
-                          <widget class="Gtk.Image" id="image13">
-                            <property name="MemberName" />
-                            <property name="Pixbuf">resource:Cannon_GUI.target_empty.svg</property>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="X">455</property>
-                    <property name="Y">339</property>
-                  </packing>
                 </child>
               </widget>
               <packing>
@@ -227,7 +211,7 @@
                     <property name="Icon">stock:gtk-refresh Button</property>
                     <property name="Label" translatable="yes">Restart</property>
                     <property name="UseUnderline">True</property>
-                    <signal name="Clicked" handler="OnClick" />
+                    <signal name="Clicked" handler="Reset" />
                   </widget>
                   <packing>
                     <property name="Expand">False</property>

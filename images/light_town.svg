@@ -8,7 +8,7 @@
    version="1.1"
    id="svg133263"
    inkscape:version="1.1 (1:1.1+202106031931+af4d65493e)"
-   sodipodi:docname="dark_town.svg"
+   sodipodi:docname="light_town.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,15 +24,15 @@
      inkscape:document-units="mm"
      showgrid="false"
      units="px"
-     inkscape:zoom="11.313709"
-     inkscape:cx="34.51565"
-     inkscape:cy="38.714096"
+     inkscape:zoom="10.248373"
+     inkscape:cx="30.102339"
+     inkscape:cy="26.735951"
      inkscape:window-width="1920"
      inkscape:window-height="1015"
      inkscape:window-x="1920"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g132588" />
+     inkscape:current-layer="g133108" />
   <defs
      id="defs133260" />
   <g
@@ -40,25 +40,49 @@
      inkscape:groupmode="layer"
      id="layer1">
     <g
-       id="g132588"
-       transform="translate(-7.9374995,-7.9374995)">
+       id="g133108"
+       transform="translate(-14.552083,-15.874999)">
       <g
-         id="g132581">
+         id="g132581-3"
+         transform="translate(6.6145835,7.9374995)"
+         style="fill:#d40000">
         <circle
-           style="fill:#000000;fill-opacity:1;stroke-width:0.264583"
-           id="path131660"
+           style="fill:#d40000;fill-opacity:1;stroke-width:0.264583"
+           id="path131660-0"
            cx="15.874999"
            cy="15.874999"
            r="7.9374995" />
       </g>
       <rect
-         style="fill:#ffffff;stroke-width:0.280633"
-         id="rect1058"
+         style="fill:#ffffff;stroke-width:0.466834"
+         id="rect1084"
          width="11.22532"
          height="11.22532"
-         x="-5.6126595"
-         y="-28.063299"
-         transform="rotate(135)" />
+         x="-29.425158"
+         y="16.876923"
+         ry="0"
+         transform="rotate(-90)" />
+      <g
+         id="g133101"
+         style="fill:#ff0000">
+        <rect
+           style="fill:#ff0000;fill-opacity:1;stroke-width:0.264583"
+           id="rect132970"
+           width="2.6193748"
+           height="7.9374995"
+           x="21.166666"
+           y="19.843748"
+           ry="0" />
+        <rect
+           style="fill:#ff0000;fill-opacity:1;stroke-width:0.264583"
+           id="rect132970-2"
+           width="2.6193748"
+           height="7.9374995"
+           x="-25.108957"
+           y="18.520832"
+           ry="0"
+           transform="rotate(-90)" />
+      </g>
     </g>
   </g>
 </svg>

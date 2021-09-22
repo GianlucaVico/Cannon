@@ -17,20 +17,25 @@ namespace Cannon_GUI
         public TileType Type { get; set; }
 
         // Some constants for the images and some predefines states
-        public static readonly Gdk.Pixbuf LIGHT_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.light_piece.svg");
+        /*public static readonly Gdk.Pixbuf LIGHT_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.light_piece.svg");
         public static readonly Gdk.Pixbuf DARK_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.dark_piece.svg");
         public static readonly Gdk.Pixbuf EMPTY_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.empty.svg");
 
-        //public static readonly Gdk.Pixbuf SELECTED_LIGHT_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.selected_light.svg");
-        //public static readonly Gdk.Pixbuf SELECTED_DARK_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.selected_dark.svg");
         public static readonly Gdk.Pixbuf SELECTED_EMPTY_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.selected_empty.svg");
-
-        //public static readonly Gdk.Pixbuf TARGET_DARK_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.target_dark.svg");
-        //public static readonly Gdk.Pixbuf TARGET_LIGHT_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.target_light.svg");
         public static readonly Gdk.Pixbuf TARGET_EMPTY_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.target_empty.svg");
 
         public static readonly Gdk.Pixbuf DARK_TOWN_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.dark_town.svg");
         public static readonly Gdk.Pixbuf LIGHT_TOWN_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.light_town.svg");
+        */
+        public static readonly Gdk.Pixbuf LIGHT_PIECE_IMG = new Gdk.Pixbuf($"images{Constants.Slash}light_piece.{Constants.ImgExt}");
+        public static readonly Gdk.Pixbuf DARK_PIECE_IMG = new Gdk.Pixbuf($"images{Constants.Slash}dark_piece.{Constants.ImgExt}");
+        public static readonly Gdk.Pixbuf EMPTY_PIECE_IMG = new Gdk.Pixbuf($"images{Constants.Slash}empty.{Constants.ImgExt}");
+
+        public static readonly Gdk.Pixbuf SELECTED_EMPTY_PIECE_IMG = new Gdk.Pixbuf($"images{Constants.Slash}selected_empty.{Constants.ImgExt}");
+        public static readonly Gdk.Pixbuf TARGET_EMPTY_PIECE_IMG = new Gdk.Pixbuf($"images{Constants.Slash}target_empty.{Constants.ImgExt}");
+
+        public static readonly Gdk.Pixbuf DARK_TOWN_IMG = new Gdk.Pixbuf($"images{Constants.Slash}dark_town.{Constants.ImgExt}");
+        public static readonly Gdk.Pixbuf LIGHT_TOWN_IMG = new Gdk.Pixbuf($"images{Constants.Slash}light_town.{Constants.ImgExt}");
 
         public Tile(int x, int y, Gtk.Fixed parent, TileManager manager)
         {

@@ -1,7 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cannon_GUI", "Cannon_GUI.csproj", "{F7C78E5C-86A8-431A-A93D-27D338790C34}"
+EndProject
+Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "Packages", "Packages.mdproj", "{62E24B81-9786-4335-B2F3-7307CA9C2C52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,5 +16,13 @@ Global
 		{F7C78E5C-86A8-431A-A93D-27D338790C34}.Debug|x86.Build.0 = Debug|x86
 		{F7C78E5C-86A8-431A-A93D-27D338790C34}.Release|x86.ActiveCfg = Release|x86
 		{F7C78E5C-86A8-431A-A93D-27D338790C34}.Release|x86.Build.0 = Release|x86
+		{62E24B81-9786-4335-B2F3-7307CA9C2C52}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{62E24B81-9786-4335-B2F3-7307CA9C2C52}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {70ED3AD0-0D8C-4A16-B065-C7566EE8AF82}
 	EndGlobalSection
 EndGlobal
