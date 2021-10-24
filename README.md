@@ -1,23 +1,39 @@
-﻿# Cannon Game
+# Cannon Game
 
 ## Description
 
 This is the game engine for the game of Cannon for the course Intelligent Search & Games (2122-KEN4123) Assignment.
-It consist of the GUI, the game engine and an agen able to play the game against a human player.
+
+It consist of the GUI, the game engine and an agent able to play the game against a human player.
 
 ## Features (working and not)
 ### ...
 
 ## Install & Run
 
-### Docker (recommended)
+### Docker for Linux (recommended)
 
 Build the docker file from the root folder of the project (there is a dot at the end): `docker build -t cannon .`
+
 Run `xhost +` to allow the docker container to use the display (`xhost -` to undo).
+
 Then, the game can be as follow: `docker run -ti --rm -e DISPLAY=$DISPLAY --network host -v /tmp/.X11-unix:/tmp/.X11-unix cannon`
 
 To rebuild the project, uncomment the lines in `Dockerfile` and build & run docker again.
 
+### Docker for Windows
+
+Install Docker for Windows from [https://www.docker.com/get-started](https://www.docker.com/get-started).
+
+Make sure it has WSL 2 enabled (it should be by default).
+
+Install VcXsrv Windows X Server from [https://sourceforge.net/projects/vcxsrv/](https://sourceforge.net/projects/vcxsrv/).
+This is used to display Linux applications from the docker container.
+
+Start VcXsrv (XLaunch in the Start menu) and click next in the wizard. In the third page tick "Disable access controll" (this is equivalent to `xhost +` in the previous paragraph).
+
+Next, build the docker file from the root folder of the project (there is a dot at the end): `docker build -t cannon .`
+Then, the game can be as follow: `docker run -ti --rm -e DISPLAY=your_ip:0 --network host cannon`
 
 ### Linux (Ubuntu, Debian, and similar)
 
@@ -37,7 +53,8 @@ Gtk# should already be included. Gtk2 should be a pre-installed package.
 In case they are missing, they can be installed as follow:
 `sudo apt-get install libgtk2.0 gtk-sharp2`
 
-The exact version of Mono used is `6.12.0.122 (tarball Mon Feb 22 17:29:18 UTC 2021)`
+The exact version of Mono used is `6.12.0.122 (tarball Mon Feb 22 17:29:18 UTC 2021)`.
+
 The .NET framework is .NET 4.7.2 from Mono.
 
 To run the game from the project's root folder: `mono bin/Release/Cannon_GUI.exe`
@@ -65,3 +82,4 @@ The project can be compiled and run with Visual Studio.
 * Some combination of switching players and clicking RESTART break the game and the AI agent is playing the wrong color.
 * The agent behaves differently on Linux and on Windows.
 * `(Cannon_GUI:1): Gtk-WARNING **: 13:48:21.661: cannot open display: :0` : run `xhost +` before `docker run ...`
+* The PLAY and STOP button are not implemented.
