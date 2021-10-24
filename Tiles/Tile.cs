@@ -2,6 +2,12 @@
 using Gtk;
 namespace Cannon_GUI
 {
+    /*
+     * A tile in the GUI.
+     * 
+     * It is made up of an EventBox (to detect click events) and two images 
+     * (to display the piece on the tile).
+     */
     public class Tile : Gtk.Widget
     {
         protected Gtk.EventBox box;
@@ -16,17 +22,6 @@ namespace Cannon_GUI
         public TileColor Color { get; set; }
         public TileType Type { get; set; }
 
-        // Some constants for the images and some predefines states
-        /*public static readonly Gdk.Pixbuf LIGHT_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.light_piece.svg");
-        public static readonly Gdk.Pixbuf DARK_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.dark_piece.svg");
-        public static readonly Gdk.Pixbuf EMPTY_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.empty.svg");
-
-        public static readonly Gdk.Pixbuf SELECTED_EMPTY_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.selected_empty.svg");
-        public static readonly Gdk.Pixbuf TARGET_EMPTY_PIECE_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.target_empty.svg");
-
-        public static readonly Gdk.Pixbuf DARK_TOWN_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.dark_town.svg");
-        public static readonly Gdk.Pixbuf LIGHT_TOWN_IMG = Gdk.Pixbuf.LoadFromResource("Cannon_GUI.light_town.svg");
-        */
         public static readonly Gdk.Pixbuf LIGHT_PIECE_IMG = new Gdk.Pixbuf($"images{Constants.Slash}light_piece.{Constants.ImgExt}");
         public static readonly Gdk.Pixbuf DARK_PIECE_IMG = new Gdk.Pixbuf($"images{Constants.Slash}dark_piece.{Constants.ImgExt}");
         public static readonly Gdk.Pixbuf EMPTY_PIECE_IMG = new Gdk.Pixbuf($"images{Constants.Slash}empty.{Constants.ImgExt}");
@@ -94,10 +89,14 @@ namespace Cannon_GUI
 
         protected void OnClick(object sender, EventArgs e)
         {
-            Console.WriteLine(ToString());
+            //Console.WriteLine(ToString());
             manager.OnClick(this);
         }
 
+        /*
+         * Get the backgound image given the state of the tile 
+         * (i.e. empty, soldier or town)
+         */
         public Gdk.Pixbuf GetImage()
         {
             Gdk.Pixbuf img = EMPTY_PIECE_IMG;
@@ -116,6 +115,10 @@ namespace Cannon_GUI
             return img;
         }
 
+        /*
+         * Get the backgound image given the state of the tile 
+         * (i.e. nothing, selected or possible target)
+         */
         public Gdk.Pixbuf GetForegroundImage()
         {
             Gdk.Pixbuf img = EMPTY_PIECE_IMG;
@@ -130,6 +133,9 @@ namespace Cannon_GUI
             return img;
         }
 
+        /*
+         * Update the look
+         */
         public void Update()
         {
             this.image.Pixbuf = GetImage();

@@ -6,7 +6,7 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../bin/Debug/Cannon_GUI.exe" internal="true" />
+    <widget-library name="../bin/Release/Cannon_GUI.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="1080 1208">
     <property name="MemberName">MainWindow</property>
@@ -185,7 +185,6 @@
                 <child>
                   <widget class="Gtk.Image" id="boardImage">
                     <property name="MemberName" />
-                    <property name="Pixbuf">resource:Cannon_GUI.board.svg</property>
                   </widget>
                 </child>
               </widget>
@@ -256,6 +255,7 @@
                     <property name="Icon">stock:gtk-undo Menu</property>
                     <property name="Label" translatable="yes">Undo</property>
                     <property name="UseUnderline">True</property>
+                    <signal name="Clicked" handler="Undo" />
                   </widget>
                   <packing>
                     <property name="Position">3</property>

@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace Cannon_GUI
 {
+    /*
+     * Represent a state of the game.
+     * 
+     * Contains the matrix representation of the board and the list of cannons.
+     * The town are stored separately but they are also in the matrix.    
+     */
     public class GameState : Loggable
     {
         // These 3 fields define a gamestate
@@ -13,10 +20,9 @@ namespace Cannon_GUI
         /// /////////////////
 
         //Ends of the cannons, can be selected
-        //protected TileColor[,] cannonHead = new TileColor[Constants.Size, Constants.Size]; // look up table
         protected List<Cannon> cannons = new List<Cannon>();
         protected int darkPieces, lightPieces, darkCannons, lightCannons; // counters
-        protected int hashKey;
+        protected int primHash, secmHash; // hash
 
         public TileColor[,] Occupied => occupied;
         public IList<Cannon> Cannons => cannons.AsReadOnly();
@@ -29,7 +35,8 @@ namespace Cannon_GUI
         public int DarkCannons { get => darkCannons; }
         public int LightCannons { get => lightCannons; }
 
-        public int HashKey => hashKey;
+        public int PrimaryHash => primHash;
+        public int SecondaryHash => secmHash;
 
         // When the winner with without destroying the town
         // E.g. timeout, state repetition, etc...
@@ -37,17 +44,20 @@ namespace Cannon_GUI
 
         public GameState(TileColor[,] init, Position darkTown, Position lightTown)
         {
-            Debug.Assert(init.GetLength(0) == Constants.Size, "New board dim 0 is not 10");
-            Debug.Assert(init.GetLength(1) == Constants.Size, "New board dim 1 is not 10");
-            Array.Copy(init, occupied, Constants.Size * Constants.Size);    // 10x10
+            Debug.Assert(init.GetLength(0) == Constants.Size, $"New board dim 0 is not {Constants.Size}");
+            Debug.Assert(init.GetLength(1) == Constants.Size, $"New board dim 1 is not {Constants.Size}");
+            //Array.Copy(init, occupied, Constants.Size * Constants.Size);    // 10x10
+            occupied = init;
             this.darkTown = darkTown;
             this.lightTown = lightTown;
-            FindCannons();
-            ComputeHash();
+            //FindCannons();
+            ComputeHash(); //TODO avoid computing hash from scratch
 
             // Pieces counters
             darkPieces = 0;
             lightPieces = 0;
+            darkCannons = -1;
+            lightCannons = -1;
             foreach (TileColor t in occupied)
             {
                 if (t == TileColor.Dark)
@@ -59,132 +69,162 @@ namespace Cannon_GUI
                     lightPieces++;
                 }
             }
-
-            // Cannons counters
-            darkCannons = 0;
-            lightCannons = 0;
-            foreach (Cannon c in cannons)
-            {
-                if (occupied[c.head1.x, c.head1.y] == TileColor.Dark)
-                {
-                    darkCannons++;
-                }
-                else if (occupied[c.head1.x, c.head1.y] == TileColor.Light)
-                {
-                    lightCannons++;
-                }
-            }
         }
 
-        public GameState(TileColor[,] init, Position darkTown, Position lightTown, Log l) : this(init, darkTown, lightTown)
+        public GameState(TileColor[,] init, Position darkTown, Position lightTown, ILog l) : this(init, darkTown, lightTown)
         {
             logger = l;
         }
 
-        /*public void Update(TileColor[,] newBoard)
+        /*
+         * Count how many cannons and update the list of cannons.
+         * The cannon counters are -1 by default.   
+         * 
+         * Horizontal cannons are not counted (see MaterialEvaluator).
+         */
+        public void FindCannons()
         {
-            Array.Copy(newBoard, occupied, Constants.Size * Constants.Size);
-            FindCannons();
-        }*/
-
-        protected void FindCannons()
-        {
-            // for each soldier check the neightbours
-            // it is enogh to check the RHS size of each soldier -> cannons from the other side have already been checked
-            // |   /     x      
-            // |  /       \
-            // x x   x--   \
-            // x: current soldier, |/-\: others
-            // Check only for the cannon displayed above
-            Position other, current;
-            int cannon = Constants.CannonLength; // check all the elements in the cannon
-            bool feasible = true;   // we can still make a cannon
-            //TODO stop earler to exclude pieces that are no part of a cannon (e.g. in the corner)
-            for (int i = 0; i < Constants.Size; i++) // each x
+            //if (darkCannons == -1) //first time looking for cannons
+            if (cannons.Count == 0)
             {
-                for (int j = 0; j < Constants.Size; j++) // each y
+                for (int i = 0; i < Constants.Size; i++) // each x
                 {
-                    current = new Position(i, j);
-                    if (!IsFree(current))
-                    { // start from a piece
-                        for (int dx = 0; dx <= 1; dx++) // orientation on x
+                    for (int j = 0; j < Constants.Size; j++) // each y
+                    {
+                        TileColor c = GetColor(i, j);
+                        if (c != TileColor.No && !IsTown(i, j))
                         {
-                            for (int dy = -1; dy <= 1; dy++) // orientation on y
+                            // Cannon: 3 pieces of the same player in line that are not towns
+
+                            //Horizontal
+                            if (IsValid(i, j + 2))
                             {
-                                if (!(dx == 0 && dy == 0) && !(dx == 0 && dy == -1)) // excluse some directions
+                                if (IsFriendly(i, j + 1, c) &&
+                                    IsFriendly(i, j + 2, c) &&
+                                    !(IsTown(i, j + 1) || IsTown(i, j + 2)))
                                 {
-                                    cannon = Constants.CannonLength - 1; // check other end of the cannon
-                                    feasible = true; // we can still make this cannon
-                                    while (cannon > 0 && feasible)
-                                    {
-                                        other = new Position(i + dx * cannon, j + dy * cannon);
-                                        //the other position is not ok
-                                        /*if (
-                                            !IsValid(other) ||
-                                            IsEnemy(other, GetColor(current)) ||
-                                            IsFree(other) ||
-                                            IsTown(other)
-                                        )*/
-                                        if (!(IsValid(other) && IsFriendly(other, GetColor(current)) && !IsTown(other))) //No need to investigate this 
-                                        {
-                                            feasible = false;
-                                        }
-                                        cannon--;
-                                    }
-                                    if (feasible)
-                                    {
-                                        other = new Position(i + dx * (Constants.CannonLength - 1), j + dy * (Constants.CannonLength - 1));
-                                        cannons.Add(new Cannon(current, other));
-                                    }
+                                    cannons.Add(new Cannon(new Position(i, j), new Position(i, j + 2)));
+                                    /*if (c == TileColor.Dark)
+                                        darkCannons++;
+                                    else
+                                        lightCannons++;*/
+                                }
+                            }
+
+                            //Vertical
+                            if (IsValid(i + 2, j))
+                            {
+                                if (IsFriendly(i + 1, j, c) &&
+                                    IsFriendly(i + 2, j, c) &&
+                                    !(IsTown(i + 1, j) || IsTown(i + 2, j)))
+                                {
+                                    cannons.Add(new Cannon(new Position(i, j), new Position(i + 2, j)));
+                                    if (c == TileColor.Dark)
+                                        darkCannons += 1;
+                                    else
+                                        lightCannons += 1;
+                                }
+                            }
+
+                            //diagonal up
+                            if (IsValid(i + 2, j + 2))
+                            {
+                                if (IsFriendly(i + 1, j + 1, c) &&
+                                    IsFriendly(i + 2, j + 2, c) &&
+                                    !(IsTown(i + 1, j + 1) || IsTown(i + 2, j + 2)))
+                                {
+                                    cannons.Add(new Cannon(new Position(i, j), new Position(i + 2, j + 2)));
+                                    if (c == TileColor.Dark)
+                                        darkCannons += 1;
+                                    else
+                                        lightCannons += 1;
+                                }
+                            }
+
+                            //diagonal down
+                            if (IsValid(i + 2, j - 2))
+                            {
+                                if (IsFriendly(i + 1, j - 1, c) &&
+                                    IsFriendly(i + 2, j - 2, c) &&
+                                    !(IsTown(i + 1, j - 1) || IsTown(i + 2, j - 2)))
+                                {
+                                    cannons.Add(new Cannon(new Position(i, j), new Position(i + 2, j - 2)));
+                                    if (c == TileColor.Dark)
+                                        darkCannons += 1;
+                                    else
+                                        lightCannons += 1;
                                 }
                             }
                         }
                     }
                 }
             }
-            //Console.WriteLine($"Cannons found: {cannons.Count}");
         }
 
+        /*
+         * Methods to get information about the current game state
+         */
         #region query
         public bool IsFree(Position p)
         {
-            return occupied[p.x, p.y] == TileColor.No;
+            return IsFree(p.x, p.y);
+        }
+
+        public bool IsFree(int x, int y)
+        {
+            return occupied[x, y] == TileColor.No;
+        }
+
+        public bool IsEnemy(int x, int y, TileColor player)
+        {
+            return occupied[x, y] == Utils.SwitchColor(player);
         }
 
         public bool IsEnemy(Position p, TileColor player)
         {
-            return occupied[p.x, p.y] == Utils.SwitchColor(player);
+            return IsEnemy(p.x, p.y, player);
         }
+
+        public static bool IsValid(int x, int y)
+        {
+            return x >= 0 && x < Constants.Size && y >= 0 && y < Constants.Size;
+        }
+
         public static bool IsValid(Position p)
         {
-            return p.x >= 0 && p.x < Constants.Size && p.y >= 0 && p.y < Constants.Size;
+            return IsValid(p.x, p.y);
         }
 
         public bool AdjacentEnemy(Position p, TileColor player)
         {
             bool adj = false;
-            Position tmp;
             for (int i = -1; i < 2; i++)
             {
                 for (int j = -1; j < 2; j++)
                 {
-                    if (j != 0 && i != 0)  //could skip -> we are looking for the other color
+                    if (IsValid(p.x + i, p.y + j) && IsEnemy(p.x + i, p.y + j, player))
                     {
-                        tmp = new Position(p.x + i, p.y + j);
-                        if (IsValid(tmp) && IsEnemy(tmp, player))
-                        {
-                            adj = true;
-                            break;  //<- bad, TODO solve
-                        }
+                        adj = true;
+                        break;  //<- bad, TODO solve
                     }
                 }
             }
             return adj;
         }
 
+        public bool AdjacentEnemy(int x, int y, TileColor player)
+        {
+            return AdjacentEnemy(new Position(x, y), player);
+        }
+
         public TileColor GetColor(Position p)
         {
-            return occupied[p.x, p.y];
+            return GetColor(p.x, p.y);
+        }
+
+        public TileColor GetColor(int x, int y)
+        {
+            return occupied[x, y];
         }
 
         public bool IsTown(Position p)
@@ -192,9 +232,19 @@ namespace Cannon_GUI
             return lightTown == p || darkTown == p;
         }
 
+        public bool IsTown(int x, int y)
+        {
+            return IsTown(new Position(x, y));
+        }
+
         public bool IsFriendly(Position p, TileColor player)
         {
-            return occupied[p.x, p.y] == player;
+            return IsFriendly(p.x, p.y, player);
+        }
+
+        public bool IsFriendly(int x, int y, TileColor player)
+        {
+            return occupied[x, y] == player;
         }
 
         public bool IsInCannon(Position p, out List<Cannon> o)
@@ -244,27 +294,36 @@ namespace Cannon_GUI
             return Winner() != TileColor.No;
         }
 
+        /*
+         * Apply a move to the current game state and return a new state.
+         * The current state remains unchanged.        
+         */
         public GameState Apply(Move m)
         {
+            // If the game is over of if it is a null move the state is unchanged
             if (End())
+            {
                 return this;
-            //logger.Log("Apply", m.ToString());
+            }
             if (m.Type == MoveType.none)
             {
                 return this;
             }
+
+            // Make a new matrix
             TileColor[,] newBoard = new TileColor[10, 10];
             Array.Copy(occupied, newBoard, 100);
-
+            Position newDarkTown = darkTown;
+            Position newLightTown = lightTown;
             switch (m.Type)
             {
-                case MoveType.shoot:
+                case MoveType.shoot:    // remove target piece
                     newBoard[m.To.x, m.To.y] = TileColor.No;
                     break;
                 case MoveType.capture:
                 case MoveType.retreat:
                 case MoveType.slide:
-                case MoveType.step:
+                case MoveType.step:     // remove starting piece and overwrited destination piece
                     newBoard[m.To.x, m.To.y] = occupied[m.From.x, m.From.y];
                     newBoard[m.From.x, m.From.y] = TileColor.No;
                     break;
@@ -273,25 +332,28 @@ namespace Cannon_GUI
                     if (m.To.y > Constants.Size / 2)
                     {
                         newBoard[m.To.x, m.To.y] = TileColor.Light;
-                        lightTown = m.To;
+                        newLightTown = m.To;
                     }
                     else
                     {
                         newBoard[m.To.x, m.To.y] = TileColor.Dark;
-                        darkTown = m.To;
+                        newDarkTown = m.To;
                     }
                     break;
             }
 
             if (m.Type != MoveType.placeTown) // do we destroy the town?
             {
-                darkTown = m.To == darkTown ? Constants.Removed : darkTown;
-                lightTown = m.To == lightTown ? Constants.Removed : lightTown;
+                newDarkTown = m.To == newDarkTown ? Constants.Removed : newDarkTown;
+                newLightTown = m.To == newLightTown ? Constants.Removed : newLightTown;
             }
-            //FindCannons();
-            return new GameState(newBoard, darkTown, lightTown, logger);
+            return new GameState(newBoard, newDarkTown, newLightTown, logger);
         }
 
+        // This method is not used
+        /*
+         * Undo a move (see GameState.Apply)
+         */
         public GameState Undo(Move m) //If the town is gone we cannot undo it -> was it a town or a normal soldier
         {
             logger.Log("Undo", m.ToString());
@@ -344,10 +406,16 @@ namespace Cannon_GUI
                     h ^= Utils.hashBase[(Constants.Size * i + j) * (int)(occupied[i, j] + 1)];
                 }
             }
-            hashKey = (h >> 32); //TODO use most significant bits
+            primHash = h >> (sizeof(int) * 8 - Constants.HashKeySize); //TODO what if hashkey size is larger than the int in th
+            if (primHash == 0)
+            {
+                Console.WriteLine(this.ToString());
+            }
+            secmHash = h ^ (primHash << (sizeof(int) * 8 - Constants.HashKeySize)); //just the remainder //TODO TODO fix 0 division
 
         }
         #region Operators
+
         // Assume comparision between states of the same game -> towns in the same position
         public static bool operator ==(GameState state, GameState other)
         {
@@ -373,6 +441,38 @@ namespace Cannon_GUI
             return !(state == other);
         }
         #endregion
+
+        public new string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(new string('-', Constants.Size * 2 + 2));
+            sb.Append('\n');
+            for (int i = 0; i < Constants.Size; i++)
+            {
+                sb.Append('|');
+                for (int j = 0; j < Constants.Size; j++)
+                {
+                    switch (occupied[j, i])
+                    {
+                        case TileColor.Dark:
+                            sb.Append('d');
+                            break;
+                        case TileColor.Light:
+                            sb.Append('l');
+                            break;
+                        default:
+                            sb.Append('.');
+                            break;
+                    }
+                    sb.Append(' ');
+                }
+                sb.Append('|');
+                sb.Append('\n');
+            }
+            sb.Append(new string('-', Constants.Size * 2 + 2));
+
+            return sb.ToString();
+        }
     }
 
 }

@@ -182,7 +182,6 @@ public partial class MainWindow
 		// Container child boardPanel.Gtk.Fixed+FixedChild
 		this.boardImage = new global::Gtk.Image();
 		this.boardImage.Name = "boardImage";
-		this.boardImage.Pixbuf = global::Gdk.Pixbuf.LoadFromResource("Cannon_GUI.board.svg");
 		this.boardPanel.Add(this.boardImage);
 		this.hbox2.Add(this.boardPanel);
 		global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(this.hbox2[this.boardPanel]));
@@ -266,5 +265,6 @@ public partial class MainWindow
 		this.darkAI.Toggled += new global::System.EventHandler(this.ChangeAI);
 		this.lightAI.Toggled += new global::System.EventHandler(this.ChangeAI);
 		this.restartButton.Clicked += new global::System.EventHandler(this.Reset);
+		this.undoButton.Clicked += new global::System.EventHandler(this.Undo);
 	}
 }

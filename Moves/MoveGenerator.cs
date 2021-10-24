@@ -4,16 +4,25 @@ using System.Collections.Generic;
 // but that enemy might not able to campure it.
 namespace Cannon_GUI
 {
+    /*
+     * Generate the moves from a game state.
+     */
     public class MoveGenerator
     {
-
+        /*
+         * Generate the moves for the player given a Tile
+         */
         public List<Move> Generate(GameState state, Tile tile) //for human player
         {
             return Generate(state, tile.Position, tile.Color);
         }
 
+        /* 
+         * Generate all the moves for a single a position and a player
+         */
         public List<Move> Generate(GameState state, Position pos, TileColor player) // for single piece
         {
+            state.FindCannons();
             List<Move> moves = new List<Move>(9); // TODO count moves
             Generate(state, pos, player, ref moves);
             return moves;
@@ -33,17 +42,18 @@ namespace Cannon_GUI
             //Steps
             GenerateSteps(state, pos, player, direction, ref moves);
 
-
             //retreats
             GenerateRetreats(state, pos, player, direction, ref moves);
         }
 
-
+        /*
+         * Generate all the possible moves in a given state and a player
+         */
         public List<Move> GenerateAll(GameState state, TileColor player)
         {
             Position town = player == TileColor.Dark ? state.DarkTown : state.LightTown;
             List<Move> moves = new List<Move>();
-            if (town == Constants.NotPlaced)
+            if (town == Constants.NotPlaced) // We can oly place the town if it is not in the board
             {
                 moves = GenerateTownPlacements(state, player);
             }
@@ -67,10 +77,38 @@ namespace Cannon_GUI
             return moves;
         }
 
+        /*
+         * Generate all the capture moves for a given state and player
+         */
+        public List<Move> GenerateAllCaptures(GameState state, TileColor player)
+        {
+            Position town = player == TileColor.Dark ? state.DarkTown : state.LightTown;
+            List<Move> moves = new List<Move>();
+            int direction = player == TileColor.Dark ? +1 : -1;
+            if (town != Constants.Removed)
+            {
+                Position p;
+                for (int i = 0; i < Constants.Size; i++)
+                {
+                    for (int j = 0; j < Constants.Size; j++)
+                    {
+                        p = new Position(i, j);
+                        if (state.IsFriendly(p, player) && !state.IsTown(p)) // cannot move town :'(
+                        {
+                            GenerateCaptures(state, p, player, direction, ref moves);
+                        }
+                    }
+                }
+            }
+            if (moves.Count == 0) // This player does not have any move
+                state.ExternalWinner = Utils.SwitchColor(player);
+            return moves;
+        }
+
         public List<Move> GenerateTownPlacements(GameState state, TileColor player)
         {
             List<Move> moves = new List<Move>(Constants.Size);
-            int y = player == TileColor.Dark ? 0 : Constants.Size - 1;
+            int y = (player == TileColor.Dark) ? 0 : Constants.Size - 1;
             for (int x = 1; x < Constants.Size - 1; x++) //exclude corners
             {
                 moves.Add(new Move(Constants.NotPlaced, new Position(x, y), MoveType.placeTown));
@@ -78,6 +116,7 @@ namespace Cannon_GUI
             return moves;
         }
 
+        // Generate each type of move
         #region MoveGenerators
         protected void GenerateSteps(GameState state, Position pos, TileColor player, int direction, ref List<Move> currentMoves)
         {
@@ -114,6 +153,7 @@ namespace Cannon_GUI
         protected void GenerateRetreats(GameState state, Position pos, TileColor player, int direction, ref List<Move> currentMoves)
         {
             Position dest, intermediate;
+
             if (state.AdjacentEnemy(pos, player)) // condition to retreat
             {
                 for (int i = -1; i < 2; i++)
@@ -131,6 +171,7 @@ namespace Cannon_GUI
 
         protected void GenerateCannonMoves(GameState state, Position pos, TileColor player, int direction, ref List<Move> currentMoves)
         {
+            state.FindCannons();
             Position intermediate;
             if (state.IsInCannon(pos, out List<Cannon> cannons))
             {
@@ -200,53 +241,5 @@ namespace Cannon_GUI
             //Console.WriteLine($"Direction: {dx} {dy}");
         }
         #endregion
-    }
-
-    public struct Move
-    {
-        public readonly Position From, To;
-        public readonly MoveType Type;
-
-        public Move(Move m)
-        {
-            From = new Position(m.From);
-            To = new Position(m.To);
-            Type = m.Type;
-        }
-
-        public Move(Position from, Position to, MoveType type)
-        {
-            From = from;
-            To = to;
-            Type = type;
-        }
-
-        public override string ToString()
-        {
-            return $"Move {Type} | {From} -> {To}";
-        }
-
-        public static bool operator ==(Move m, Move other)
-        {
-            return (m.Type == other.Type) && (m.From == other.From) && (m.To == other.To);
-        }
-
-        public static bool operator !=(Move m, Move other)
-        {
-            return !(m == other);
-        }
-    }
-
-
-    //MoveType is sorted by how strong I think the move is
-    public enum MoveType
-    {
-        none, // for debugging
-        placeTown,
-        step,
-        retreat,
-        slide,
-        capture,
-        shoot,
     }
 }

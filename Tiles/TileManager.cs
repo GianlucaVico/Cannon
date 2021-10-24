@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using GLib;
 
 namespace Cannon_GUI
 {
-    public class TileManager : Loggable, Player
+    /*
+     * Class that managet the GUI board and the interaction with the human player.
+     */
+    public class TileManager : Loggable, IPlayer
     {
-        protected Tile[,] tiles = new Tile[Constants.Size, Constants.Size];
-        protected Tile selected;
-        protected List<Move> targets; //store the moves that player can perform when a tile is selected
-        protected TileColor player;
+        protected Tile[,] tiles = new Tile[Constants.Size, Constants.Size]; // Matrix of tiles
+        protected Tile selected; // Selected tile
+        protected List<Move> targets; // Store the moves that player can perform when a tile is selected
+        protected TileColor player; // Human player
         protected MoveGenerator generator;
 
         protected GameState lastState;
         protected bool stop = false;
         // false when the ai is playing, true, when the human is playing
         public bool playing = true;
-        protected Agent opponent;
+        public History history;
 
         public GameState LastState { get => lastState; }
 
@@ -36,11 +37,11 @@ namespace Cannon_GUI
                     tiles[i, j].Show();
                 }
             }
-            this.opponent = opponent;
+            //this.opponent = opponent;
             InitialPosition();
         }
 
-        public TileManager(TileColor player, Gtk.Fixed parent, MoveGenerator generator, Agent opponent, Log l) : this(player, parent, generator, opponent)
+        public TileManager(TileColor player, Gtk.Fixed parent, MoveGenerator generator, Agent opponent, ILog l) : this(player, parent, generator, opponent)
         {
             logger = l;
             lastState.SetLogger(l);
@@ -48,6 +49,7 @@ namespace Cannon_GUI
 
         public void InitialPosition()
         {
+            lastState = null;
             logger.Log("Board to initial position");
             stop = false;
             for (int i = 0; i < 10; i++)
@@ -77,11 +79,11 @@ namespace Cannon_GUI
             playing = (player == TileColor.Dark);
             Update();
             lastState = GetGameState();
-
-            //if (!playing)
-            //    GLib.Idle.Add(new GLib.IdleHandler(OpponentMove));
         }
 
+        /*
+         * Update the look of all the tiles
+         */
         public void Update()
         {
             foreach (Tile t in tiles)
@@ -90,11 +92,14 @@ namespace Cannon_GUI
             }
         }
 
+        /*
+         * Click event. Respond to the user interaction
+         */
         public void OnClick(Tile tile)
         {
-            if (!stop && playing)
+            if (!stop && playing)  // We can and we are playing
             {
-                if (!(selected == null))
+                if (!(selected is null)) // Deselect a piece if it is not a target
                 {
                     if (
                         (tile.Type == TileType.Piece && tile.Selected) ||
@@ -102,10 +107,9 @@ namespace Cannon_GUI
                     {
                         Deselect(tile);
                     }
-                    else if (tile.Target)
+                    else if (tile.Target)   // Perform a move from the selected piece to the target
                     {
-                        //Console.WriteLine("Click on tile");
-                        GameState newState = ApplyMove(FindMoveFromTarget(tile.Position)); //TODO FIX 
+                        GameState newState = ApplyMove(FindMoveFromTarget(tile.Position));
                         if (lastState.End())
                         {
                             logger.Log("Winner", lastState.Winner().ToString());
@@ -115,7 +119,7 @@ namespace Cannon_GUI
                         playing = false;
                     }
                 }
-                else if (tile.Type == TileType.Piece && tile.Color == player)
+                else if (tile.Type == TileType.Piece && tile.Color == player) // Select a piece
                 {
                     Select(tile);
                 }
@@ -125,7 +129,6 @@ namespace Cannon_GUI
 
         protected void Select(Tile tile)
         {
-            //Console.WriteLine($"Selected {tile.Position}");
             tile.Selected = true;
             selected = tile;
             ClearTargets();
@@ -147,6 +150,9 @@ namespace Cannon_GUI
             this.player = player;
         }
 
+        /*
+         * Set a GUI board from a given game state
+         */
         public void FromGameState(GameState state)
         {
             selected = null;
@@ -176,12 +182,15 @@ namespace Cannon_GUI
             lastState = state;
         }
 
+        /*
+         * Get the current game state of the board
+         */
         public GameState GetGameState()
         {
             TileColor[,] board = new TileColor[Constants.Size, Constants.Size];
             Position darkTown = Constants.NotPlaced;
             Position lightTown = Constants.NotPlaced;
-            if (lastState != null)
+            if (!(lastState is null))
             {
                 // Keep the removed state
                 if (lastState.DarkTown == Constants.Removed)
@@ -209,15 +218,10 @@ namespace Cannon_GUI
 
         protected void UpdateTargets()
         {
-            //lastState = GetGameState();
-
-            //targets.Capacity = 9; // at most 9 possible moves //TODO <- this crash everything
-            //GameState state = GetGameState();
             Position town = (player == TileColor.Dark) ? lastState.DarkTown : lastState.LightTown;
             List<Move> moves;
             if (town == Constants.NotPlaced)
             {
-                //moves = generator.GenerateTownPlacements(lastState, player);
                 moves = generator.GenerateTownPlacements(GetGameState(), player);
             }
             else
@@ -259,24 +263,20 @@ namespace Cannon_GUI
             return res;
         }
 
-
+        /*
+         * Apply a move and change the game state
+         */
         public GameState ApplyMove(Move move)
         {
             GameState newState = lastState.Apply(move);
             logger.Log("Apply", move.ToString());
             FromGameState(newState);
             Update();
+            if (!(history is null))
+            {
+                history.Push(move, newState);
+            }
             return newState;
         }
-
-        /*public bool OpponentMove()
-        {
-            Gtk.Application.Invoke((o, e) => GetGameState());
-            //lastState = ApplyMove(opponent.DoMove(GetGameState()));
-            lastState = ApplyMove(opponent.DoMove(LastState));
-            Gtk.Application.Invoke((o, e) => Update());
-            playing = true;
-            return false;
-        }*/
     }
 }

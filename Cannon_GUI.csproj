@@ -23,8 +23,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.1</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -74,6 +74,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy|x86'">
     <OutputPath>bin\x86\Deploy\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'WinRelease|x86'">
+    <OutputPath>bin\WinRelease\</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <!-- <Reference Include="AtkSharp, Version=3.24.24.34, Culture=neutral, processorArchitecture=MSIL">
@@ -128,20 +137,6 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="board.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="light_piece.svg" />
-    <EmbeddedResource Include="dark_piece.svg" />
-    <EmbeddedResource Include="empty.svg" />
-    <EmbeddedResource Include="selected_dark.svg" />
-    <EmbeddedResource Include="selected_light.svg" />
-    <EmbeddedResource Include="target_dark.svg" />
-    <EmbeddedResource Include="target_empty.svg" />
-    <EmbeddedResource Include="target_light.svg" />
-    <EmbeddedResource Include="selected_empty.svg" />
-    <EmbeddedResource Include="dark_town.svg" />
-    <EmbeddedResource Include="light_town.svg" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -154,19 +149,47 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
-    <Compile Include="Tile.cs" />
-    <Compile Include="TileManager.cs" />
-    <Compile Include="MoveGenerator.cs" />
-    <Compile Include="GameState.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="AlphaBeta.cs" />
-    <Compile Include="MoveOrdering.cs" />
-    <Compile Include="Agent.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="GameClock.cs" />
-    <Compile Include="Evaluator.cs" />
-    <Compile Include="History.cs" />
+    <Compile Include="Search\AlphaBeta.cs" />
+    <Compile Include="Search\AlphaBetaTT.cs" />
+    <Compile Include="Search\AspirationSearch.cs" />
+    <Compile Include="Tables\HT.cs" />
+    <Compile Include="Tables\KT.cs" />
+    <Compile Include="Tables\TT.cs" />
+    <Compile Include="Evaluation\IEvaluator.cs" />
+    <Compile Include="Evaluation\RandomizedEvaluator.cs" />
+    <Compile Include="Evaluation\ConstantEvaluator.cs" />
+    <Compile Include="Evaluation\MaterialEvaluator.cs" />
+    <Compile Include="Evaluation\MobilityEvaluator.cs" />
+    <Compile Include="Evaluation\DistanceEvaluator.cs" />
+    <Compile Include="Evaluation\AggregateEvaluator.cs" />
+    <Compile Include="Log\ILog.cs" />
+    <Compile Include="Log\Loggable.cs" />
+    <Compile Include="Log\ConsoleLog.cs" />
+    <Compile Include="Log\GUILog.cs" />
+    <Compile Include="Tiles\Tile.cs" />
+    <Compile Include="Tiles\TileManager.cs" />
+    <Compile Include="Tiles\TileType.cs" />
+    <Compile Include="Tiles\TileColor.cs" />
+    <Compile Include="GameManagement\Timed.cs" />
+    <Compile Include="Tiles\Cannon.cs" />
+    <Compile Include="Tiles\Position.cs" />
+    <Compile Include="GameManagement\History.cs" />
+    <Compile Include="GameManagement\GameClock.cs" />
+    <Compile Include="Moves\Move.cs" />
+    <Compile Include="Moves\MoveType.cs" />
+    <Compile Include="Moves\IMoveOrdering.cs" />
+    <Compile Include="Moves\RandomOrdering.cs" />
+    <Compile Include="Moves\TypeOrdering.cs" />
+    <Compile Include="Moves\TableOrdering.cs" />
+    <Compile Include="Moves\MoveGenerator.cs" />
+    <Compile Include="Agent\Agent.cs" />
+    <Compile Include="Agent\IPlayer.cs" />
+    <Compile Include="Agent\RandomAgent.cs" />
+    <Compile Include="Agent\SimpleAgent.cs" />
+    <Compile Include="GameManagement\GameState.cs" />
+    <Compile Include="Tables\TTEntry.cs" />
+    <Compile Include="Tables\TTType.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -181,7 +204,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -189,22 +211,69 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="README.md" />
-    <None Include="images\board.svg" />
-    <None Include="images\dark_piece.svg" />
-    <None Include="images\dark_town.svg" />
-    <None Include="images\empty.svg" />
-    <None Include="images\light_piece.svg" />
-    <None Include="images\light_town.svg" />
-    <None Include="images\selected_dark.svg" />
-    <None Include="images\selected_empty.svg" />
-    <None Include="images\selected_light.svg" />
-    <None Include="images\target_dark.svg" />
-    <None Include="images\target_empty.svg" />
-    <None Include="images\target_light.svg" />
+    <None Include="images\board.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\dark_piece.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\dark_town.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\empty.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\light_piece.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\light_town.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\selected_dark.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\selected_empty.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\selected_light.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\target_dark.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\target_empty.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\target_light.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\board.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\dark_piece.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\dark_town.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\empty.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\light_piece.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\light_town.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\selected_empty.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="images\target_empty.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Dockerfile" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\GtkSharp.3.24.24.34\build\GtkSharp.targets" Condition="Exists('packages\GtkSharp.3.24.24.34\build\GtkSharp.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
