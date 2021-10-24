@@ -33,6 +33,7 @@ This is used to display Linux applications from the docker container.
 Start VcXsrv (XLaunch in the Start menu) and click next in the wizard. In the third page tick "Disable access controll" (this is equivalent to `xhost +` in the previous paragraph).
 
 Next, build the docker file from the root folder of the project (there is a dot at the end): `docker build -t cannon .`
+
 Then, the game can be as follow: `docker run -ti --rm -e DISPLAY=your_ip:0 --network host cannon`
 
 ### Linux (Ubuntu, Debian, and similar)
