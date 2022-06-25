@@ -4,7 +4,7 @@
 
 This is the game engine for the game of Cannon for the course Intelligent Search & Games (2122-KEN4123) Assignment.
 
-It consist of the GUI, the game engine and an agent able to play the game against a human player.
+It consists of the GUI, the game engine and an agent able to play the game against a human player.
 
 ## Features (working and not)
 ### ...
@@ -30,7 +30,7 @@ Make sure it has WSL 2 enabled (it should be by default).
 Install VcXsrv Windows X Server from [https://sourceforge.net/projects/vcxsrv/](https://sourceforge.net/projects/vcxsrv/).
 This is used to display Linux applications from the docker container.
 
-Start VcXsrv (XLaunch in the Start menu) and click next in the wizard. In the third page tick "Disable access controll" (this is equivalent to `xhost +` in the previous paragraph).
+Start VcXsrv (XLaunch in the Start menu) and click next in the wizard. On the third page tick "Disable access control" (this is equivalent to `xhost +` in the previous paragraph).
 
 Next, build the docker file from the root folder of the project (there is a dot at the end): `docker build -t cannon .`
 
@@ -67,7 +67,7 @@ To recompile the project: `msbuild Cannon_GUI.csproj -t:Rebuild -p:Configuration
 
 It should be possible to run the game on Windows with Docker.
 
-Alternatively, it is possible to find the compiled  project in the folder `bin/WindRelease`.
+Alternatively, it is possible to find the compiled project in the folder `bin/WindRelease`.
 
 It needs Gtk# (it can be downloaded here: [https://www.mono-project.com/download/stable/#download-win]([https://www.mono-project.com/download/stable/#download-win])) 
 and .NET for Windows ([https://dotnet.microsoft.com/download/dotnet](https://dotnet.microsoft.com/download/dotnet), it should be already included in Visual Studio).
@@ -80,7 +80,7 @@ The project can be compiled and run with Visual Studio.
 * Possible bugs with the UNDO button, use it carefully.
 * Click UNDO twice to undo the human player's move.
 * When switching players, the agent timer is running for the first move of the human player.
-* Some combination of switching players and clicking RESTART break the game and the AI agent is playing the wrong color.
+* Some combination of switching players and clicking RESTART break the game and the AI agent is playing the wrong colour.
 * The agent behaves differently on Linux and on Windows.
 * `(Cannon_GUI:1): Gtk-WARNING **: 13:48:21.661: cannot open display: :0` : run `xhost +` before `docker run ...`
-* The PLAY and STOP button are not implemented.
+* The PLAY and STOP buttons are not implemented.
